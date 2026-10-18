@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+{% block title %}Афиша — Время рядом{% endblock %}
+{% block content %}
+<section class="section page-top">
+  <div class="container">
+    <div class="section-head">
+      <h1>Афиша</h1>
+      <p>Ищите мероприятия по названию, категории и дате.</p>
+    </div>
+
+    <form class="filters" method="get" action="{{ url_for('afisha') }}">
+      <div class="field">
+        <label for="q">Поиск по названию</label>
+        <input type="search" id="q" name="q" value="{{ q }}" placeholder="Например, керамика">
+      </div>
+      <div class="field">
+        <label for="category">Категория</label>
+        <select id="category" name="category">
+          <option value="">Все категории</option>
+          {% for cat in categories %}
+            <option value="{{ cat }}" {% if category == cat %}selected{% endif %}>{{ cat }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      <div class="field">
+        <label for="date_from">Дата от</label>
+        <input type="date" id="date_from" name="date_from" value="{{ date_from }}">
+      </div>
+      <div class="field">
+        <label for="date_to">Дата до</label>
+        <input type="date" id="date_to" name="date_to" value="{{ date_to }}">
+      </div>
+      <div class="field">
+        <label for="sort">Сортировка</label>
+        <select id="sort" name="sort">
+          <option value="date_asc" {% if sort == 'date_asc' %}selected{% endif %}>По дате: сначала ближайшие</option>
+          <option value="date_desc" {% if sort == 'date_desc' %}selected{% endif %}>По дате: сначала поздние</option>
+        </select>
+      </div>
+      <div class="filters-actions">
+        <button class="btn btn-primary" type="submit">Применить</button>
+        <a class="btn btn-ghost" href="{{ url_for('afisha') }}">Сбросить</a>
+      </div>
+    </form>
+
+    {% if events %}
+      <div class="event-grid">
+        {% for event in events %}
+          {% include "partials/event_card.html" %}
+        {% endfor %}
+      </div>
+    {% else %}
+      <p class="empty-state">По заданным параметрам ничего не найдено.</p>
+    {% endif %}
+  </div>
+</section>
+{% endblock %}

@@ -1,0 +1,101 @@
+{% extends "base.html" %}
+{% block title %}Личный кабинет — Время рядом{% endblock %}
+{% block content %}
+<section class="section page-top">
+  <div class="container">
+    <div class="cabinet-head">
+      <div>
+        <h1>{{ user.first_name }} {{ user.last_name }}</h1>
+        <p class="muted">Телефон: {{ user.phone }}</p>
+      </div>
+      <div class="cabinet-actions">
+        <a class="btn btn-primary" href="{{ url_for('create_event') }}">Создать мероприятие</a>
+        <a class="btn btn-ghost" href="{{ url_for('logout') }}">Выйти</a>
+      </div>
+    </div>
+
+    <div class="cabinet-block">
+      <h2>Мои записи</h2>
+      {% if registered_events %}
+        <div class="event-grid">
+          {% for event in registered_events %}
+            <article class="event-card">
+              <a class="event-card-media" href="{{ url_for('event_detail', event_id=event.id) }}">
+                <img src="{{ event.image_url }}" alt="{{ event.title }}" loading="lazy">
+              </a>
+              <div class="event-card-body">
+                <div class="event-card-meta">
+                  <span class="badge">{{ event.category }}</span>
+                  <time datetime="{{ event.datetime }}">{{ event.datetime_display }}</time>
+                </div>
+                <h3 class="event-card-title">
+                  <a href="{{ url_for('event_detail', event_id=event.id) }}">{{ event.title }}</a>
+                </h3>
+                <p class="event-card-place">{{ event.place }}</p>
+                <form method="post" action="{{ url_for('unregister_event', event_id=event.id) }}">
+                  <input type="hidden" name="next" value="{{ url_for('cabinet') }}">
+                  <button class="btn btn-ghost btn-small" type="submit">Отменить запись</button>
+                </form>
+              </div>
+            </article>
+          {% endfor %}
+        </div>
+      {% else %}
+        <p class="empty-state">Вы пока никуда не записаны.</p>
+      {% endif %}
+    </div>
+
+    <div class="cabinet-block">
+      <h2>Избранное</h2>
+      {% if favorite_events %}
+        <div class="event-grid">
+          {% for event in favorite_events %}
+            {% include "partials/event_card.html" %}
+          {% endfor %}
+        </div>
+      {% else %}
+        <p class="empty-state">В избранном пока пусто.</p>
+      {% endif %}
+    </div>
+
+    <div class="cabinet-block">
+      <h2>Мои мероприятия</h2>
+      {% if created_events %}
+        <div class="event-grid">
+          {% for event in created_events %}
+            <article class="event-card{% if event.cancelled %} is-cancelled{% endif %}">
+              <a class="event-card-media" href="{{ url_for('event_detail', event_id=event.id) }}">
+                <img src="{{ event.image_url }}" alt="{{ event.title }}" loading="lazy">
+                {% if event.cancelled %}
+                  <span class="badge badge-danger event-card-status">Отменено</span>
+                {% endif %}
+              </a>
+              <div class="event-card-body">
+                <div class="event-card-meta">
+                  <span class="badge">{{ event.category }}</span>
+                  <time datetime="{{ event.datetime }}">{{ event.datetime_display }}</time>
+                </div>
+                <h3 class="event-card-title">
+                  <a href="{{ url_for('event_detail', event_id=event.id) }}">{{ event.title }}</a>
+                </h3>
+                <p class="event-card-place">{{ event.place }}</p>
+                <div class="event-card-footer">
+                  <span class="seats">Мест: {{ event.seats_left }}</span>
+                  {% if not event.cancelled %}
+                    <form method="post" action="{{ url_for('cancel_event', event_id=event.id) }}" onsubmit="return confirm('Отменить мероприятие?');">
+                      <input type="hidden" name="next" value="{{ url_for('cabinet') }}">
+                      <button class="btn btn-danger btn-small" type="submit">Отменить</button>
+                    </form>
+                  {% endif %}
+                </div>
+              </div>
+            </article>
+          {% endfor %}
+        </div>
+      {% else %}
+        <p class="empty-state">Вы ещё не создавали мероприятия.</p>
+      {% endif %}
+    </div>
+  </div>
+</section>
+{% endblock %}

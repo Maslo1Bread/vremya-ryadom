@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+{% block title %}Создать мероприятие — Время рядом{% endblock %}
+{% block content %}
+<section class="section page-top">
+  <div class="container form-wrap">
+    <div class="section-head">
+      <h1>Создать мероприятие</h1>
+      <p>Заполните форму — событие появится в афише и в вашем кабинете.</p>
+    </div>
+
+    <form class="form-panel" method="post" action="{{ url_for('create_event') }}" enctype="multipart/form-data" novalidate>
+      <div class="field {% if errors.title %}has-error{% endif %}">
+        <label for="title">Название</label>
+        <input type="text" id="title" name="title" value="{{ form.title }}" required>
+        {% if errors.title %}<span class="field-error">{{ errors.title }}</span>{% endif %}
+      </div>
+      <div class="field {% if errors.category %}has-error{% endif %}">
+        <label for="category">Категория</label>
+        <select id="category" name="category" required>
+          <option value="">Выберите категорию</option>
+          {% for cat in categories %}
+            <option value="{{ cat }}" {% if form.category == cat %}selected{% endif %}>{{ cat }}</option>
+          {% endfor %}
+        </select>
+        {% if errors.category %}<span class="field-error">{{ errors.category }}</span>{% endif %}
+      </div>
+      <div class="field {% if errors.datetime %}has-error{% endif %}">
+        <label for="datetime">Дата и время</label>
+        <input type="datetime-local" id="datetime" name="datetime" value="{{ form.datetime }}" required>
+        {% if errors.datetime %}<span class="field-error">{{ errors.datetime }}</span>{% endif %}
+      </div>
+      <div class="field {% if errors.place %}has-error{% endif %}">
+        <label for="place">Место проведения</label>
+        <input type="text" id="place" name="place" value="{{ form.place }}" required>
+        {% if errors.place %}<span class="field-error">{{ errors.place }}</span>{% endif %}
+      </div>
+      <div class="field {% if errors.description %}has-error{% endif %}">
+        <label for="description">Описание</label>
+        <textarea id="description" name="description" rows="5" required>{{ form.description }}</textarea>
+        {% if errors.description %}<span class="field-error">{{ errors.description }}</span>{% endif %}
+      </div>
+      <div class="field {% if errors.seats_total %}has-error{% endif %}">
+        <label for="seats_total">Количество мест</label>
+        <input type="number" id="seats_total" name="seats_total" min="1" value="{{ form.seats_total }}" required>
+        {% if errors.seats_total %}<span class="field-error">{{ errors.seats_total }}</span>{% endif %}
+      </div>
+      <div class="field {% if errors.image %}has-error{% endif %}">
+        <label for="image">Фото мероприятия</label>
+        <input type="file" id="image" name="image" accept="image/png,image/jpeg,image/webp,image/gif">
+        <span class="field-hint">Необязательно. PNG, JPG, WEBP или GIF до 5 МБ. Без фото подставится заглушка по категории.</span>
+        {% if errors.image %}<span class="field-error">{{ errors.image }}</span>{% endif %}
+      </div>
+      <button class="btn btn-primary" type="submit">Сохранить</button>
+      <a class="btn btn-ghost" href="{{ url_for('cabinet') }}">Отмена</a>
+    </form>
+  </div>
+</section>
+{% endblock %}

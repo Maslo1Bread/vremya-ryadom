@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+{% block title %}Регистрация — Время рядом{% endblock %}
+{% block content %}
+<section class="section page-top">
+  <div class="container form-wrap">
+    <div class="section-head">
+      <h1>Регистрация</h1>
+      <p>Создайте аккаунт, чтобы записываться на события и добавлять их в избранное.</p>
+    </div>
+
+    <form class="form-panel" method="post" action="{{ url_for('register') }}" novalidate>
+      <div class="field {% if errors.phone %}has-error{% endif %}">
+        <label for="phone">Телефон</label>
+        <input type="tel" id="phone" name="phone" value="{{ form.phone }}" placeholder="9001234567" required>
+        {% if errors.phone %}<span class="field-error">{{ errors.phone }}</span>{% endif %}
+      </div>
+      <div class="field {% if errors.first_name %}has-error{% endif %}">
+        <label for="first_name">Имя</label>
+        <input type="text" id="first_name" name="first_name" value="{{ form.first_name }}" required>
+        {% if errors.first_name %}<span class="field-error">{{ errors.first_name }}</span>{% endif %}
+      </div>
+      <div class="field {% if errors.last_name %}has-error{% endif %}">
+        <label for="last_name">Фамилия</label>
+        <input type="text" id="last_name" name="last_name" value="{{ form.last_name }}" required>
+        {% if errors.last_name %}<span class="field-error">{{ errors.last_name }}</span>{% endif %}
+      </div>
+      <div class="field {% if errors.password %}has-error{% endif %}">
+        <label for="password">Пароль (8–10 символов)</label>
+        <input type="password" id="password" name="password" minlength="8" maxlength="10" required>
+        {% if errors.password %}<span class="field-error">{{ errors.password }}</span>{% endif %}
+      </div>
+      <div class="field {% if errors.password2 %}has-error{% endif %}">
+        <label for="password2">Повтор пароля</label>
+        <input type="password" id="password2" name="password2" minlength="8" maxlength="10" required>
+        {% if errors.password2 %}<span class="field-error">{{ errors.password2 }}</span>{% endif %}
+      </div>
+      <button class="btn btn-primary" type="submit">Зарегистрироваться</button>
+      <p class="form-switch">Уже есть аккаунт? <a href="{{ url_for('login') }}">Войти</a></p>
+    </form>
+  </div>
+</section>
+{% endblock %}

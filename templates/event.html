@@ -1,0 +1,69 @@
+{% extends "base.html" %}
+{% block title %}{{ event.title }} — Время рядом{% endblock %}
+{% block content %}
+<section class="section page-top">
+  <div class="container narrow">
+    <p class="eyebrow"><a href="{{ url_for('afisha') }}">← К афише</a></p>
+    <article class="event-detail{% if event.cancelled %} is-cancelled{% endif %}">
+      <div class="event-detail-cover">
+        <img src="{{ event.image_url }}" alt="{{ event.title }}">
+      </div>
+      <div class="event-detail-top">
+        <div class="event-detail-badges">
+          <span class="badge">{{ event.category }}</span>
+          {% if event.cancelled %}
+            <span class="badge badge-danger">Отменено</span>
+          {% endif %}
+        </div>
+        <h1>{{ event.title }}</h1>
+        <ul class="detail-list">
+          <li><strong>Дата и время:</strong> {{ event.datetime_display }}</li>
+          <li><strong>Место:</strong> {{ event.place }}</li>
+          <li><strong>Свободных мест:</strong> {{ event.seats_left }} из {{ event.seats_total }}</li>
+        </ul>
+      </div>
+
+      <div class="event-detail-body">
+        <h2>Описание</h2>
+        <p>{{ event.description }}</p>
+      </div>
+
+      <div class="event-actions">
+        {% if event.cancelled %}
+          <p class="hint danger-text">Это мероприятие отменено организатором.</p>
+        {% elif user %}
+          {% if registered %}
+            <form method="post" action="{{ url_for('unregister_event', event_id=event.id) }}">
+              <input type="hidden" name="next" value="{{ url_for('event_detail', event_id=event.id) }}">
+              <button class="btn btn-ghost" type="submit">Отменить запись</button>
+            </form>
+            <p class="hint success-text">Вы записаны на это мероприятие.</p>
+          {% elif event.seats_left > 0 %}
+            <form method="post" action="{{ url_for('register_event', event_id=event.id) }}">
+              <button class="btn btn-primary" type="submit">Записаться</button>
+            </form>
+          {% else %}
+            <button class="btn btn-primary" type="button" disabled>Мест нет</button>
+          {% endif %}
+
+          <form method="post" action="{{ url_for('toggle_favorite', event_id=event.id) }}">
+            <input type="hidden" name="next" value="{{ url_for('event_detail', event_id=event.id) }}">
+            <button class="btn btn-ghost" type="submit">
+              {% if favorite %}Убрать из избранного{% else %}В избранное{% endif %}
+            </button>
+          </form>
+        {% else %}
+          <p class="hint">Чтобы записаться на мероприятие, <a href="{{ url_for('login', next=url_for('event_detail', event_id=event.id)) }}">войдите</a> или <a href="{{ url_for('register') }}">зарегистрируйтесь</a>.</p>
+        {% endif %}
+
+        {% if is_author and not event.cancelled %}
+          <form method="post" action="{{ url_for('cancel_event', event_id=event.id) }}" onsubmit="return confirm('Отменить мероприятие? Оно исчезнет из афиши.');">
+            <input type="hidden" name="next" value="{{ url_for('cabinet') }}">
+            <button class="btn btn-danger" type="submit">Отменить мероприятие</button>
+          </form>
+        {% endif %}
+      </div>
+    </article>
+  </div>
+</section>
+{% endblock %}

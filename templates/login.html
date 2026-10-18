@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% block title %}Вход — Время рядом{% endblock %}
+{% block content %}
+<section class="section page-top">
+  <div class="container form-wrap">
+    <div class="section-head">
+      <h1>Вход</h1>
+      <p>Войдите по телефону и паролю, чтобы записываться на мероприятия.</p>
+    </div>
+
+    <form class="form-panel" method="post" action="{{ url_for('login', next=request.args.get('next', '')) }}" novalidate>
+      {% if error %}
+        <div class="form-error-global">{{ error }}</div>
+      {% endif %}
+
+      <div class="field">
+        <label for="phone">Телефон</label>
+        <input type="tel" id="phone" name="phone" value="{{ phone }}" placeholder="9001234567" required>
+      </div>
+      <div class="field">
+        <label for="password">Пароль</label>
+        <input type="password" id="password" name="password" required>
+      </div>
+      <button class="btn btn-primary" type="submit">Войти</button>
+      <p class="form-switch">Нет аккаунта? <a href="{{ url_for('register') }}">Зарегистрироваться</a></p>
+    </form>
+  </div>
+</section>
+{% endblock %}

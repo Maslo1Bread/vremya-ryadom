@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+{% block title %}Время рядом — городская афиша{% endblock %}
+{% block content %}
+<section class="hero">
+  <div class="container hero-grid">
+    <div class="hero-copy">
+      <h1 class="hero-brand">Время рядом</h1>
+      <p class="hero-lead">Афиша города без лишнего шума: смотрите события, фильтруйте по интересам и записывайтесь, когда готовы.</p>
+      <div class="hero-actions">
+        <a class="btn btn-primary" href="{{ url_for('afisha') }}">Смотреть афишу</a>
+        {% if not user %}
+          <a class="btn btn-ghost" href="{{ url_for('register') }}">Зарегистрироваться</a>
+        {% endif %}
+      </div>
+    </div>
+    <div class="hero-visual" aria-hidden="true">
+      <div class="hero-panel">
+        <span class="hero-panel-label">в городе сейчас</span>
+        <strong>мастер-классы · прогулки · спорт · концерты</strong>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container">
+    <div class="section-head">
+      <h2>Ближайшие мероприятия</h2>
+      <p>То, что стоит запланировать на ближайшие дни.</p>
+    </div>
+
+    {% if events %}
+      <div class="event-grid">
+        {% for event in events %}
+          {% include "partials/event_card.html" %}
+        {% endfor %}
+      </div>
+    {% else %}
+      <p class="empty-state">Ближайших мероприятий пока нет. Загляните в полную афишу.</p>
+    {% endif %}
+
+    <div class="section-actions">
+      <a class="btn btn-primary" href="{{ url_for('afisha') }}">Вся афиша</a>
+    </div>
+  </div>
+</section>
+{% endblock %}
